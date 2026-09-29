@@ -3,68 +3,250 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Futbolcuyu Bul</title>
+<title>Futbolcuyu Bul — Online</title>
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#071b12,#123d28);color:#fff;min-height:100vh;display:grid;place-items:center}
-.card{width:min(720px,92%);background:#10261b;border:1px solid #315541;border-radius:24px;padding:28px;box-sizing:border-box;box-shadow:0 20px 60px #0007}
-h1{margin:0 0 6px;font-size:32px}.sub{color:#b8c8bf}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:22px 0}.stat{background:#173325;border-radius:14px;padding:12px;text-align:center}.stat b{display:block;font-size:22px}.stat span{font-size:11px;color:#aabbb1}
-.challenge{background:#0b1d14;border:1px solid #315541;border-radius:18px;padding:25px}
-.country{color:#b9c9c0;font-size:18px}.team{font-size:32px;font-weight:800;margin-top:5px}
-input{width:100%;box-sizing:border-box;padding:15px;margin-top:20px;border-radius:12px;border:1px solid #456b56;background:#10261b;color:white;font-size:17px}
-button{padding:13px 17px;margin:10px 8px 0 0;border:0;border-radius:11px;background:#dce9e0;color:#10261b;font-weight:700;cursor:pointer}button.primary{background:#36d17d}button:disabled{opacity:.45}
-.msg{min-height:25px;margin-top:15px;font-weight:700}.hint{margin-top:12px;padding:12px;border-radius:10px;background:#173325;color:#d9e6df}
-@media(max-width:500px){.stats{grid-template-columns:repeat(2,1fr)}.team{font-size:27px}}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#071b12,#123d28);color:#fff;min-height:100vh;display:grid;place-items:center;padding:20px}
+.app{width:min(760px,100%);background:#0b1d14;border:1px solid #315541;border-radius:22px;padding:24px;box-shadow:0 18px 60px #0008}
+h1{margin:0 0 5px;font-size:30px} .sub{color:#a9c0b3;margin-bottom:20px}
+.card{background:#10291d;border:1px solid #315541;border-radius:16px;padding:18px;margin-top:14px}
+input,button{width:100%;padding:13px;border-radius:11px;border:1px solid #41634f;font-size:16px} input{background:#08160f;color:white} button{background:#36d17d;color:#06130b;border:0;font-weight:800;cursor:pointer} button.secondary{background:#1d3a2a;color:#fff} button:disabled{opacity:.5;cursor:not-allowed}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px} .hidden{display:none!important}
+.code{font-size:32px;letter-spacing:7px;font-weight:900;text-align:center;padding:12px;background:#08160f;border-radius:12px}
+.players{display:grid;gap:7px;margin-top:10px} .player{display:flex;justify-content:space-between;background:#0b1d14;padding:9px 11px;border-radius:9px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0} .stat{background:#173325;padding:10px;border-radius:12px;text-align:center} .stat b{display:block;font-size:21px} .stat span{font-size:11px;color:#aac0b4}
+.challenge{text-align:center;padding:22px;background:#173325;border-radius:16px} .country{font-size:25px;font-weight:800} .team{font-size:35px;font-weight:900;margin:7px 0 18px} .timer{font-size:34px;font-weight:900} .bar{height:8px;background:#08160f;border-radius:10px;overflow:hidden;margin:8px 0 16px} .bar div{height:100%;width:100%;background:#36d17d}
+.msg{min-height:24px;margin:10px 0;text-align:center;color:#d6e5dd} .leaderboard{display:grid;gap:7px} .rank{display:flex;justify-content:space-between;background:#173325;padding:10px;border-radius:9px}
+.small{font-size:13px;color:#9fb5a9} .ok{color:#65e89a} .bad{color:#ff8c8c}
+@media(max-width:520px){.row,.stats{grid-template-columns:1fr 1fr} .team{font-size:27px}}
 </style>
 </head>
 <body>
-<div class="card">
-<h1>⚽ Futbolcuyu Bul</h1><div class="sub">Ülke + takım veriliyor. Futbolcuyu sen bul!</div>
-<div class="stats"><div class="stat"><b id=q>1/10</b><span>SORU</span></div><div class="stat"><b id=s>0</b><span>PUAN</span></div><div class="stat"><b id=st>0</b><span>SERİ</span></div><div class="stat"><b id=h>3</b><span>HAK</span></div></div>
-<div class="challenge"><div class=country id=c></div><div class=team id=t></div>
-<div class=sub>Bu ülkenin futbolcusu, bu takımda oynamış olmalı.</div>
-<div class=hint id=hint hidden></div>
-<input id=a placeholder="Futbolcunun adını yaz..." autocomplete=off>
-<button class=primary id=check>Tahmin Et</button><button id=hintBtn>💡 İpucu (-2)</button><button id=next hidden>Sonraki →</button>
-<div class=msg id=msg></div></div>
+<main class="app">
+<h1>⚽ Futbolcuyu Bul — Online</h1>
+<div class="sub">Arkadaşlarınla aynı odada yarış. Her soru için <b>15 saniye</b>.</div>
+
+<section id="login" class="card">
+<h3>Oyuncu adı</h3>
+<input id="name" maxlength="18" placeholder="Örn. Taner">
+<div class="row" style="margin-top:10px">
+<button id="create">Oda Oluştur</button>
+<button id="showJoin" class="secondary">Odaya Katıl</button>
 </div>
-<script>
+<div id="joinBox" class="hidden" style="margin-top:10px">
+<input id="roomCode" maxlength="6" placeholder="6 haneli oda kodu" style="text-transform:uppercase">
+<button id="join" style="margin-top:10px">Katıl</button>
+</div>
+<div id="loginMsg" class="msg"></div>
+</section>
+
+<section id="lobby" class="card hidden">
+<div class="small">ODA KODU</div>
+<div id="code" class="code">------</div>
+<div class="small" style="text-align:center;margin-top:8px">Arkadaşlarına bu kodu gönder.</div>
+<h3>Oyuncular</h3>
+<div id="players" class="players"></div>
+<button id="start" style="margin-top:12px">🎮 Oyunu Başlat</button>
+<div id="wait" class="msg"></div>
+</section>
+
+<section id="game" class="hidden">
+<div class="stats"><div class="stat"><b id="q">1/10</b><span>SORU</span></div><div class="stat"><b id="score">0</b><span>PUAN</span></div><div class="stat"><b id="round">-</b><span>DURUM</span></div><div class="stat"><b id="online">0</b><span>OYUNCU</span></div></div>
+<div class="challenge"><div class="country" id="country">—</div><div class="team" id="team">—</div><div class="timer" id="timer">15</div><div class="bar"><div id="fill"></div></div>
+<input id="answer" placeholder="Futbolcunun adını yaz" autocomplete="off">
+<button id="send" style="margin-top:10px">Cevapla</button>
+<div id="msg" class="msg"></div>
+<button id="next" class="secondary hidden">Sonraki Soru</button>
+</div>
+<div class="card"><h3>🏆 Canlı Sıralama</h3><div id="board" class="leaderboard"></div></div>
+</section>
+
+<section id="finish" class="card hidden">
+<h2>🏆 Oyun Bitti</h2><div id="finalBoard" class="leaderboard"></div>
+<button id="again" style="margin-top:12px">Yeni Oda</button>
+</section>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getDatabase, ref, set, update, onValue, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+/* Firebase Web uygulaması yapılandırması. */
+const firebaseConfig={
+  apiKey:"AIzaSyCE3U7UxWdRi0gxvBU4WQUea8u6SywO_VY",
+  authDomain:"fulbolcuyu-bul.firebaseapp.com",
+  databaseURL:"https://futbolcuyu-bul-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"fulbolcuyu-bul",
+  storageBucket:"fulbolcuyu-bul.firebasestorage.app",
+  messagingSenderId:"915829764623",
+  appId:"1:915829764623:web:bca6e60a02c58fc24b697a"
+};
+
 const D=[
-["🇦🇷 Arjantin","Barcelona",["Lionel Messi"],"Arjantinli efsane."],
-["🇵🇹 Portekiz","Manchester United",["Cristiano Ronaldo"],"Portekizli yıldız."],
-["🇫🇷 Fransa","Real Madrid",["Kylian Mbappe","Karim Benzema"],"Fransız yıldız."],
-["🇧🇷 Brezilya","Paris Saint-Germain",["Neymar"],"Brezilyalı yıldız."],
-["🇪🇬 Mısır","Liverpool",["Mohamed Salah"],"Mısırlı yıldız."],
-["🇳🇴 Norveç","Manchester City",["Erling Haaland"],"Norveçli golcü."],
-["🇧🇪 Belçika","Manchester City",["Kevin De Bruyne"],"Belçikalı orta saha."],
-["🇭🇷 Hırvatistan","Real Madrid",["Luka Modric"],"Hırvat orta saha."],
-["🇵🇱 Polonya","Bayern Munich",["Robert Lewandowski"],"Polonyalı golcü."],
-["🇫🇷 Fransa","Arsenal",["Thierry Henry"],"Fransız forvet."],
-["🇨🇲 Kamerun","Barcelona",["Samuel Eto’o"],"Kamerunlu golcü."],
-["🇨🇮 Fildişi Sahili","Chelsea",["Didier Drogba"],"Fildişi Sahilli forvet."],
-["🇸🇪 İsveç","Paris Saint-Germain",["Zlatan Ibrahimovic"],"İsveçli forvet."],
-["🇪🇸 İspanya","Barcelona",["Xavi","Andres Iniesta","Sergio Busquets"],"İspanyol oyuncu."],
-["🇮🇹 İtalya","Juventus",["Gianluigi Buffon","Andrea Pirlo"],"İtalyan futbol efsanesi."],
-["🇩🇪 Almanya","Bayern Munich",["Thomas Muller","Manuel Neuer","Philipp Lahm"],"Alman oyuncu."],
-["🇧🇷 Brezilya","Barcelona",["Ronaldinho","Rivaldo","Raphinha"],"Brezilyalı oyuncu."],
-["🇦🇷 Arjantin","Manchester City",["Sergio Aguero"],"Arjantinli golcü."],
-["🇺🇾 Uruguay","Barcelona",["Luis Suarez"],"Uruguaylı golcü."],
-["🇪🇸 İspanya","Manchester City",["Rodri"],"İspanyol orta saha."],
-["🇹🇷 Türkiye","Inter Milan",["Hakan Calhanoglu"],"Türk milli oyuncu."],
-["🇹🇷 Türkiye","Real Madrid",["Arda Guler","Nuri Sahin","Mesut Ozil"],"Türk oyuncu."],
-["🇧🇷 Brezilya","Real Madrid",["Ronaldo Nazario","Roberto Carlos","Vinicius Junior"],"Brezilyalı oyuncu."],
-["🇬🇧 İngiltere","Real Madrid",["David Beckham","Jude Bellingham","Michael Owen"],"İngiliz oyuncu."],
-["🇧🇷 Brezilya","AC Milan",["Kaka","Ronaldo Nazario","Ronaldinho"],"Brezilyalı oyuncu."]
+["🇨🇮 Fildişi Sahili","Manchester City",["Yaya Toure"],"Fildişi Sahilli eski orta saha."],
+["🇷🇸 Sırbistan","Chelsea",["Branislav Ivanovic"],"Sırp savunma oyuncusu."],
+["🇨🇱 Şili","Bayern Munich",["Arturo Vidal"],"Şilili orta saha."],
+["🇨🇴 Kolombiya","Atletico Madrid",["Radamel Falcao"],"Kolombiyalı golcü."],
+["🇩🇿 Cezayir","Manchester City",["Riyad Mahrez"],"Cezayirli kanat oyuncusu."],
+["🇸🇳 Senegal","Liverpool",["Sadio Mane"],"Senegalli hücum oyuncusu."],
+["🇬🇭 Gana","Chelsea",["Michael Essien"],"Ganalı orta saha."],
+["🇨🇲 Kamerun","Barcelona",["Alex Song"],"Kamerunlu orta saha."],
+["🇨🇿 Çekya","Chelsea",["Petr Cech"],"Çek kaleci."],
+["🇺🇦 Ukrayna","AC Milan",["Andriy Shevchenko"],"Ukraynalı golcü."],
+["🇳🇱 Hollanda","Inter Milan",["Wesley Sneijder"],"Hollandalı orta saha."],
+["🇭🇷 Hırvatistan","Tottenham",["Luka Modric"],"Hırvat orta saha."],
+["🇧🇦 Bosna-Hersek","Manchester City",["Edin Dzeko"],"Bosnalı golcü."],
+["🇦🇲 Ermenistan","Manchester United",["Henrikh Mkhitaryan"],"Ermeni hücum oyuncusu."],
+["🇯🇵 Japonya","AC Milan",["Keisuke Honda"],"Japon orta saha."],
+["🇰🇷 Güney Kore","Tottenham",["Son Heung-min"],"Güney Koreli hücum oyuncusu."],
+["🇲🇽 Meksika","Manchester United",["Javier Hernandez"],"Meksikalı golcü."],
+["🇺🇾 Uruguay","Atletico Madrid",["Diego Godin"],"Uruguaylı savunma oyuncusu."],
+["🇵🇹 Portekiz","Wolverhampton",["Ruben Neves"],"Portekizli orta saha."],
+["🇪🇸 İspanya","Napoli",["Fabian Ruiz"],"İspanyol orta saha."],
+["🇮🇹 İtalya","Paris Saint-Germain",["Marco Verratti"],"İtalyan orta saha."],
+["🇫🇷 Fransa","Arsenal",["William Saliba"],"Fransız savunma oyuncusu."],
+["🇩🇪 Almanya","Arsenal",["Mesut Ozil"],"Alman oyun kurucu."],
+["🇧🇷 Brezilya","Tottenham",["Richarlison"],"Brezilyalı hücum oyuncusu."],
+["🇦🇷 Arjantin","Inter Milan",["Javier Zanetti"],"Arjantinli savunma oyuncusu."],
+["🇳🇱 Hollanda","Real Madrid",["Arjen Robben"],"Hollandalı kanat oyuncusu."],
+["🇵🇱 Polonya","Borussia Dortmund",["Jakub Blaszczykowski"],"Polonyalı kanat oyuncusu."],
+["🇨🇮 Fildişi Sahili","Barcelona",["Yaya Toure"],"Fildişi Sahilli orta saha."],
+["🇨🇭 İsviçre","Liverpool",["Xherdan Shaqiri"],"İsviçreli kanat oyuncusu."],
+["🇦🇹 Avusturya","Bayern Munich",["David Alaba"],"Avusturyalı savunma oyuncusu."],
+["🇭🇺 Macaristan","Liverpool",["Dominik Szoboszlai"],"Macar orta saha."],
+["🇬🇦 Gabon","Borussia Dortmund",["Pierre-Emerick Aubameyang"],"Gabonlu golcü."],
+["🇬🇳 Gine","Liverpool",["Naby Keita"],"Gineli orta saha."],
+["🇨🇮 Fildişi Sahili","Galatasaray",["Didier Drogba"],"Fildişi Sahilli forvet."],
+["🇷🇴 Romanya","Galatasaray",["Gheorghe Hagi"],"Rumen futbol efsanesi."],
+["🇧🇬 Bulgaristan","Barcelona",["Hristo Stoichkov"],"Bulgar futbol efsanesi."],
+["🇱🇷 Liberya","AC Milan",["George Weah"],"Liberyalı futbol efsanesi."],
+["🇨🇷 Kosta Rika","Real Madrid",["Keylor Navas"],"Kosta Rikalı kaleci."],
+["🇸🇮 Slovenya","Atletico Madrid",["Jan Oblak"],"Sloven kaleci."],
+["🇲🇦 Fas","Ajax",["Hakim Ziyech"],"Faslı hücum oyuncusu."],
+["🇹🇷 Türkiye","Inter Milan",["Hakan Calhanoglu"],"Türk orta saha."],
+["🇹🇷 Türkiye","Lille",["Burak Yilmaz"],"Türk golcü."],
+["🇹🇷 Türkiye","Leicester City",["Caglar Soyuncu"],"Türk savunma oyuncusu."],
+["🇩🇰 Danimarka","Tottenham",["Christian Eriksen"],"Danimarkalı orta saha."],
+["🇸🇪 İsveç","Barcelona",["Zlatan Ibrahimovic"],"İsveçli golcü."],
+["🇷🇺 Rusya","Chelsea",["Yuri Zhirkov"],"Rus sol bek/kanat."],
+["🇵🇪 Peru","Bayern Munich",["Claudio Pizarro"],"Perulu golcü."],
+["🇨🇴 Kolombiya","Real Madrid",["James Rodriguez"],"Kolombiyalı oyun kurucu."],
+["🇪🇨 Ekvador","Manchester United",["Antonio Valencia"],"Ekvadorlu kanat oyuncusu."],
+["🇵🇾 Paraguay","Manchester City",["Roque Santa Cruz"],"Paraguaylı golcü."],
+["🇨🇱 Şili","Arsenal",["Alexis Sanchez"],"Şilili hücum oyuncusu."],
+["🇬🇭 Gana","Sunderland",["Asamoah Gyan"],"Ganalı golcü."],
+["🇳🇬 Nijerya","Chelsea",["John Obi Mikel"],"Nijeryalı orta saha."],
+["🇨🇮 Fildişi Sahili","Chelsea",["Salomon Kalou"],"Fildişi Sahilli hücum oyuncusu."],
+["🇪🇬 Mısır","Roma",["Mohamed Salah"],"Mısırlı kanat oyuncusu."],
+["🇸🇳 Senegal","Chelsea",["Edouard Mendy"],"Senegalli kaleci."],
+["🇨🇲 Kamerun","Inter Milan",["Samuel Eto’o"],"Kamerunlu golcü."]
 ];
-let q=[],i=0,score=0,streak=0,lives=3,locked=false;
-const $=x=>document.getElementById(x);
-const norm=x=>x.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i").replace(/[^a-z0-9 ]/g,"").trim();
-function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
-function start(){q=shuffle(D).slice(0,10);i=0;score=0;streak=0;lives=3;show()}
-function show(){let x=q[i];locked=false;$("q").textContent=i+1+"/10";$("s").textContent=score;$("st").textContent=streak;$("h").textContent=lives;$("c").textContent=x[0];$("t").textContent=x[1];$("a").value="";$("a").disabled=false;$("check").disabled=false;$("check").hidden=false;$("hintBtn").disabled=false;$("hintBtn").hidden=false;$("hint").hidden=true;$("next").hidden=true;$("msg").textContent=""}
-$("check").onclick=()=>{if(locked)return;let g=norm($("a").value),x=q[i];if(!g){$("msg").textContent="Bir futbolcu adı yaz.";return}locked=true;$("a").disabled=true;$("check").disabled=true;$("hintBtn").disabled=true;let ok=x[2].some(v=>norm(v)==g||g.length>4&&(norm(v).includes(g)||g.includes(norm(v))));if(ok){score+=10;streak++;$("msg").textContent="✅ DOĞRU! +10 puan"}else{lives--;streak=0;score=Math.max(0,score-2);$("msg").textContent="❌ Yanlış! Cevap: "+x[2].join(" / ")}$("s").textContent=score;$("st").textContent=streak;$("h").textContent=lives;$("next").hidden=false;$("next").textContent=i==9?"🏆 Sonuç":"Sonraki →"}
-$("hintBtn").onclick=()=>{if(locked)return;score=Math.max(0,score-2);$("s").textContent=score;$("hint").textContent="💡 "+q[i][3];$("hint").hidden=false;$("hintBtn").disabled=true}
-$("next").onclick=()=>{if(i<9){i++;show()}else{ $("c").textContent="🏆 Oyun bitti";$("t").textContent=score+" PUAN";$("hint").textContent="10 soruluk turun tamamlandı."; $("hint").hidden=false;$("a").disabled=true;$("check").hidden=true;$("hintBtn").hidden=true;$("next").textContent="🔄 Yeni Oyun";$("next").onclick=start}}
-start();
+const TIME_LIMIT=15, TOTAL=10;
+let app,db,auth,user,roomId="",myId="",isHost=false,myName="",timer=null,answered=false,advancing=false;
+const $=id=>document.getElementById(id);
+const norm=s=>s.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i").replace(/[^a-z0-9 ]/g,"").trim();
+const shuffle=a=>[...a].sort(()=>Math.random()-.5);
+const code=()=>Math.random().toString(36).slice(2,8).toUpperCase();
+
+function show(id,on=true){$(id).classList.toggle("hidden",!on)}
+function validConfig(){return !Object.values(firebaseConfig).some(v=>String(v).startsWith("BURAYA"))}
+async function init(){
+ if(!validConfig()){ $("loginMsg").innerHTML='Online sistemi etkinleştirmek için Firebase yapılandırması gerekiyor.<br><span class="small">Önce aşağıdaki Firebase adımlarını yapacağız.</span>'; return; }
+ try{app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);const cred=await signInAnonymously(auth);user=cred.user;myId=user.uid;$("loginMsg").textContent="";}
+ catch(e){$("loginMsg").textContent="Firebase bağlantısı kurulamadı: "+e.message}
+}
+function setMsg(t,cls=""){$("loginMsg").textContent=t;$("loginMsg").className="msg "+cls}
+async function createRoom(){
+ myName=$("name").value.trim(); if(!myName)return setMsg("Önce adını yaz.");
+ roomId=code(); isHost=true;
+ const qs=shuffle(D).slice(0,TOTAL).map(x=>D.indexOf(x));
+ await set(ref(db,"rooms/"+roomId),{host:myId,status:"lobby",q:qs,idx:0,startedAt:0,players:{[myId]:{name:myName,score:0,answered:false}}});
+ enterLobby();
+}
+async function joinRoom(){
+ myName=$("name").value.trim(); roomId=$("roomCode").value.trim().toUpperCase();
+ if(!myName||roomId.length!==6)return setMsg("Ad ve 6 haneli oda kodu gerekli.");
+ const r=ref(db,"rooms/"+roomId);
+ const snap=await new Promise(resolve=>onValue(r,resolve,{onlyOnce:true}));
+ if(!snap.exists()) return setMsg("Bu oda bulunamadı.","bad");
+ const room=snap.val();
+ if(room.status!=="lobby") return setMsg("Bu oda artık yeni oyuncu kabul etmiyor.","bad");
+ await update(ref(db,"rooms/"+roomId+"/players/"+(myId||user.uid)),{name:myName,score:0,answered:false});
+ isHost=false; enterLobby();
+}
+function enterLobby(){
+ show("login",false);show("lobby",true);$("code").textContent=roomId;
+ onValue(ref(db,"rooms/"+roomId),snap=>{
+   const x=snap.val(); if(!x)return;
+   const ps=Object.values(x.players||{});
+   $("players").innerHTML=ps.map(p=>`<div class="player"><span>👤 ${p.name}</span><b>${p.score||0}</b></div>`).join("");
+   if(x.status==="playing"){
+     show("lobby",false);show("game",true);renderGame(x);
+     const allAnswered=Object.values(x.players||{}).length>0 && Object.values(x.players||{}).every(p=>p.answered);
+     if(isHost && allAnswered && !advancing){ setTimeout(advance,500); }
+   }
+   if(x.status==="finished") finish(x);
+ });
+}
+async function startGame(){
+ if(!isHost)return;
+ await update(ref(db,"rooms/"+roomId),{status:"playing",idx:0,startedAt:serverTimestamp()});
+}
+function renderGame(x){
+ const qidx=x.q[x.idx], item=D[qidx]; $("q").textContent=(x.idx+1)+"/"+TOTAL;
+ $("country").textContent=item[0];$("team").textContent=item[1];
+ $("online").textContent=Object.keys(x.players||{}).length;
+ const me=x.players?.[myId]; $("score").textContent=me?.score||0;
+ $("round").textContent=me?.answered?"Bitti":"Oyna";
+ $("answer").disabled=!!me?.answered; $("send").disabled=!!me?.answered;
+ $("msg").textContent=me?.answered?"Cevabın kaydedildi.":""; answered=!!me?.answered;
+ $("board").innerHTML=Object.values(x.players||{}).sort((a,b)=>(b.score||0)-(a.score||0)).map((p,n)=>`<div class="rank"><span>${n+1}. ${p.name}</span><b>${p.score||0}</b></div>`).join("");
+ startTimer(x.startedAt);
+}
+function startTimer(started){
+ if(timer)clearInterval(timer);
+ const startMs=typeof started==="number"?started:Date.now();
+ timer=setInterval(async()=>{
+   const elapsed=Math.floor((Date.now()-startMs)/1000), left=Math.max(0,TIME_LIMIT-elapsed);
+   $("timer").textContent=left;$("fill").style.width=(left/TIME_LIMIT*100)+"%";
+   if(left<=0){clearInterval(timer); if(!answered) await submitAnswer("");}
+ },250);
+}
+async function submitAnswer(v){
+ if(answered)return;
+ answered=true; const val=norm(v||$("answer").value), x=(await new Promise(resolve=>onValue(ref(db,"rooms/"+roomId),s=>resolve(s),{onlyOnce:true}))).val();
+ const item=D[x.q[x.idx]]; const ok=!!val&&item[2].some(n=>norm(n)===val || (val.length>4&&(norm(n).includes(val)||val.includes(norm(n)))));
+ const p=ref(db,"rooms/"+roomId+"/players/"+myId);
+ const me=x.players[myId]||{name:myName,score:0};
+ await update(p,{name:myName,score:Math.max(0,(me.score||0)+(ok?10:-2)),answered:true});
+ $("msg").innerHTML=ok?'<span class="ok">✅ Doğru! +10</span>':('<span class="bad">❌ Yanlış / süre doldu.</span> Doğru: '+item[2].join(" / "));
+ $("answer").disabled=true;$("send").disabled=true;
+ if(isHost) setTimeout(advance,1200);
+}
+async function advance(){
+ if(advancing)return;
+ advancing=true;
+ const s=await new Promise(resolve=>onValue(ref(db,"rooms/"+roomId),resolve,{onlyOnce:true})); const x=s.val();
+ if(!x||x.status!=="playing"){advancing=false;return;}
+ const allAnswered=Object.values(x.players||{}).every(p=>p.answered);
+ if(allAnswered || Date.now()-(x.startedAt||Date.now())>TIME_LIMIT*1000+1800){
+   if(x.idx>=TOTAL-1) await update(ref(db,"rooms/"+roomId),{status:"finished"});
+   else await update(ref(db,"rooms/"+roomId),{idx:x.idx+1,startedAt:serverTimestamp(),players:Object.fromEntries(Object.entries(x.players).map(([k,p])=>[k,{...p,answered:false}]))});
+ }
+}
+function finish(x){
+ if(timer)clearInterval(timer);show("lobby",false);show("game",false);show("finish",true);
+ const arr=Object.values(x.players||{}).sort((a,b)=>(b.score||0)-(a.score||0));
+ $("finalBoard").innerHTML=arr.map((p,n)=>`<div class="rank"><span>${n+1}. ${p.name}</span><b>${p.score||0} puan</b></div>`).join("");
+}
+$("create").onclick=createRoom;
+$("showJoin").onclick=()=>$("joinBox").classList.toggle("hidden");
+$("join").onclick=joinRoom;
+$("start").onclick=startGame;
+$("send").onclick=()=>submitAnswer();
+$("answer").addEventListener("keydown",e=>{if(e.key==="Enter")submitAnswer()});
+$("again").onclick=()=>location.reload();
+init();
 </script>
-</body></html>
+</body>
+</html>
