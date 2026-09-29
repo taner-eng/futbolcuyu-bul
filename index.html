@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Futbolcuyu Bul</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#071b12,#123d28);color:#fff;min-height:100vh;display:grid;place-items:center}
+.card{width:min(720px,92%);background:#10261b;border:1px solid #315541;border-radius:24px;padding:28px;box-sizing:border-box;box-shadow:0 20px 60px #0007}
+h1{margin:0 0 6px;font-size:32px}.sub{color:#b8c8bf}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:22px 0}.stat{background:#173325;border-radius:14px;padding:12px;text-align:center}.stat b{display:block;font-size:22px}.stat span{font-size:11px;color:#aabbb1}
+.challenge{background:#0b1d14;border:1px solid #315541;border-radius:18px;padding:25px}
+.country{color:#b9c9c0;font-size:18px}.team{font-size:32px;font-weight:800;margin-top:5px}
+input{width:100%;box-sizing:border-box;padding:15px;margin-top:20px;border-radius:12px;border:1px solid #456b56;background:#10261b;color:white;font-size:17px}
+button{padding:13px 17px;margin:10px 8px 0 0;border:0;border-radius:11px;background:#dce9e0;color:#10261b;font-weight:700;cursor:pointer}button.primary{background:#36d17d}button:disabled{opacity:.45}
+.msg{min-height:25px;margin-top:15px;font-weight:700}.hint{margin-top:12px;padding:12px;border-radius:10px;background:#173325;color:#d9e6df}
+@media(max-width:500px){.stats{grid-template-columns:repeat(2,1fr)}.team{font-size:27px}}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>⚽ Futbolcuyu Bul</h1><div class="sub">Ülke + takım veriliyor. Futbolcuyu sen bul!</div>
+<div class="stats"><div class="stat"><b id=q>1/10</b><span>SORU</span></div><div class="stat"><b id=s>0</b><span>PUAN</span></div><div class="stat"><b id=st>0</b><span>SERİ</span></div><div class="stat"><b id=h>3</b><span>HAK</span></div></div>
+<div class="challenge"><div class=country id=c></div><div class=team id=t></div>
+<div class=sub>Bu ülkenin futbolcusu, bu takımda oynamış olmalı.</div>
+<div class=hint id=hint hidden></div>
+<input id=a placeholder="Futbolcunun adını yaz..." autocomplete=off>
+<button class=primary id=check>Tahmin Et</button><button id=hintBtn>💡 İpucu (-2)</button><button id=next hidden>Sonraki →</button>
+<div class=msg id=msg></div></div>
+</div>
+<script>
+const D=[
+["🇦🇷 Arjantin","Barcelona",["Lionel Messi"],"Arjantinli efsane."],
+["🇵🇹 Portekiz","Manchester United",["Cristiano Ronaldo"],"Portekizli yıldız."],
+["🇫🇷 Fransa","Real Madrid",["Kylian Mbappe","Karim Benzema"],"Fransız yıldız."],
+["🇧🇷 Brezilya","Paris Saint-Germain",["Neymar"],"Brezilyalı yıldız."],
+["🇪🇬 Mısır","Liverpool",["Mohamed Salah"],"Mısırlı yıldız."],
+["🇳🇴 Norveç","Manchester City",["Erling Haaland"],"Norveçli golcü."],
+["🇧🇪 Belçika","Manchester City",["Kevin De Bruyne"],"Belçikalı orta saha."],
+["🇭🇷 Hırvatistan","Real Madrid",["Luka Modric"],"Hırvat orta saha."],
+["🇵🇱 Polonya","Bayern Munich",["Robert Lewandowski"],"Polonyalı golcü."],
+["🇫🇷 Fransa","Arsenal",["Thierry Henry"],"Fransız forvet."],
+["🇨🇲 Kamerun","Barcelona",["Samuel Eto’o"],"Kamerunlu golcü."],
+["🇨🇮 Fildişi Sahili","Chelsea",["Didier Drogba"],"Fildişi Sahilli forvet."],
+["🇸🇪 İsveç","Paris Saint-Germain",["Zlatan Ibrahimovic"],"İsveçli forvet."],
+["🇪🇸 İspanya","Barcelona",["Xavi","Andres Iniesta","Sergio Busquets"],"İspanyol oyuncu."],
+["🇮🇹 İtalya","Juventus",["Gianluigi Buffon","Andrea Pirlo"],"İtalyan futbol efsanesi."],
+["🇩🇪 Almanya","Bayern Munich",["Thomas Muller","Manuel Neuer","Philipp Lahm"],"Alman oyuncu."],
+["🇧🇷 Brezilya","Barcelona",["Ronaldinho","Rivaldo","Raphinha"],"Brezilyalı oyuncu."],
+["🇦🇷 Arjantin","Manchester City",["Sergio Aguero"],"Arjantinli golcü."],
+["🇺🇾 Uruguay","Barcelona",["Luis Suarez"],"Uruguaylı golcü."],
+["🇪🇸 İspanya","Manchester City",["Rodri"],"İspanyol orta saha."],
+["🇹🇷 Türkiye","Inter Milan",["Hakan Calhanoglu"],"Türk milli oyuncu."],
+["🇹🇷 Türkiye","Real Madrid",["Arda Guler","Nuri Sahin","Mesut Ozil"],"Türk oyuncu."],
+["🇧🇷 Brezilya","Real Madrid",["Ronaldo Nazario","Roberto Carlos","Vinicius Junior"],"Brezilyalı oyuncu."],
+["🇬🇧 İngiltere","Real Madrid",["David Beckham","Jude Bellingham","Michael Owen"],"İngiliz oyuncu."],
+["🇧🇷 Brezilya","AC Milan",["Kaka","Ronaldo Nazario","Ronaldinho"],"Brezilyalı oyuncu."]
+];
+let q=[],i=0,score=0,streak=0,lives=3,locked=false;
+const $=x=>document.getElementById(x);
+const norm=x=>x.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i").replace(/[^a-z0-9 ]/g,"").trim();
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function start(){q=shuffle(D).slice(0,10);i=0;score=0;streak=0;lives=3;show()}
+function show(){let x=q[i];locked=false;$("q").textContent=i+1+"/10";$("s").textContent=score;$("st").textContent=streak;$("h").textContent=lives;$("c").textContent=x[0];$("t").textContent=x[1];$("a").value="";$("a").disabled=false;$("check").disabled=false;$("check").hidden=false;$("hintBtn").disabled=false;$("hintBtn").hidden=false;$("hint").hidden=true;$("next").hidden=true;$("msg").textContent=""}
+$("check").onclick=()=>{if(locked)return;let g=norm($("a").value),x=q[i];if(!g){$("msg").textContent="Bir futbolcu adı yaz.";return}locked=true;$("a").disabled=true;$("check").disabled=true;$("hintBtn").disabled=true;let ok=x[2].some(v=>norm(v)==g||g.length>4&&(norm(v).includes(g)||g.includes(norm(v))));if(ok){score+=10;streak++;$("msg").textContent="✅ DOĞRU! +10 puan"}else{lives--;streak=0;score=Math.max(0,score-2);$("msg").textContent="❌ Yanlış! Cevap: "+x[2].join(" / ")}$("s").textContent=score;$("st").textContent=streak;$("h").textContent=lives;$("next").hidden=false;$("next").textContent=i==9?"🏆 Sonuç":"Sonraki →"}
+$("hintBtn").onclick=()=>{if(locked)return;score=Math.max(0,score-2);$("s").textContent=score;$("hint").textContent="💡 "+q[i][3];$("hint").hidden=false;$("hintBtn").disabled=true}
+$("next").onclick=()=>{if(i<9){i++;show()}else{ $("c").textContent="🏆 Oyun bitti";$("t").textContent=score+" PUAN";$("hint").textContent="10 soruluk turun tamamlandı."; $("hint").hidden=false;$("a").disabled=true;$("check").hidden=true;$("hintBtn").hidden=true;$("next").textContent="🔄 Yeni Oyun";$("next").onclick=start}}
+start();
+</script>
+</body></html>
