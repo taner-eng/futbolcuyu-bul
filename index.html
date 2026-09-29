@@ -75,7 +75,7 @@ import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/1
 const firebaseConfig={
   apiKey:"AIzaSyCE3U7UxWdRi0gxvBU4WQUea8u6SywO_VY",
   authDomain:"fulbolcuyu-bul.firebaseapp.com",
-  databaseURL:"https://futbolcuyu-bul-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL:"https://fulbolcuyu-bul-default-rtdb.europe-west1.firebasedatabase.app",
   projectId:"fulbolcuyu-bul",
   storageBucket:"fulbolcuyu-bul.firebasestorage.app",
   messagingSenderId:"915829764623",
@@ -158,10 +158,16 @@ async function init(){
 function setMsg(t,cls=""){$("loginMsg").textContent=t;$("loginMsg").className="msg "+cls}
 async function createRoom(){
  myName=$("name").value.trim(); if(!myName)return setMsg("Önce adını yaz.");
- roomId=code(); isHost=true;
- const qs=shuffle(D).slice(0,TOTAL).map(x=>D.indexOf(x));
- await set(ref(db,"rooms/"+roomId),{host:myId,status:"lobby",q:qs,idx:0,startedAt:0,players:{[myId]:{name:myName,score:0,answered:false}}});
- enterLobby();
+ if(!db || !myId)return setMsg("Firebase bağlantısı hazır değil. Sayfayı yenileyip tekrar deneyin.");
+ try{
+   roomId=code(); isHost=true;
+   const qs=shuffle(D).slice(0,TOTAL).map(x=>D.indexOf(x));
+   await set(ref(db,"rooms/"+roomId),{host:myId,status:"lobby",q:qs,idx:0,startedAt:0,players:{[myId]:{name:myName,score:0,answered:false}}});
+   enterLobby();
+ }catch(e){
+   console.error(e);
+   setMsg("Oda oluşturulamadı: "+(e?.message||e));
+ }
 }
 async function joinRoom(){
  myName=$("name").value.trim(); roomId=$("roomCode").value.trim().toUpperCase();
